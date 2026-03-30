@@ -28,6 +28,9 @@
     },
     "experiments": {
       "baseUrl": "/sunbi-edu"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

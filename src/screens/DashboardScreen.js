@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW, CURRICULUM_STEPS } from '../lib/constants';
 
 const MOCK_DATA = [
@@ -88,7 +89,7 @@ export default function DashboardScreen() {
                 const done = branch.completedSteps.includes(step.id);
                 return (
                   <View key={step.id} style={[styles.stepItem, done && styles.stepItemDone]}>
-                    <Text style={styles.stepIcon}>{step.icon}</Text>
+                    <Feather name={step.icon} size={12} color={done ? COLORS.success : COLORS.textTertiary} />
                     <Text style={[styles.stepLabel, done && styles.stepLabelDone]}>
                       {step.short}
                     </Text>

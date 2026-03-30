@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, Alert, Modal,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW } from '../lib/constants';
 
 const INITIAL_BRANCHES = [
@@ -57,7 +58,7 @@ export default function BranchManageScreen() {
       {/* 검색 + 등록 */}
       <View style={styles.topBar}>
         <View style={styles.searchWrap}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Feather name="search" size={16} color={COLORS.textTertiary} style={{ marginRight: SPACING.sm }} />
           <TextInput
             style={styles.searchInput}
             placeholder="지점명 또는 점주 검색"
@@ -83,9 +84,9 @@ export default function BranchManageScreen() {
             <View style={styles.branchInfo}>
               <Text style={styles.branchName}>{branch.name}</Text>
               <View style={styles.branchMetaRow}>
-                <Text style={styles.branchMeta}>👤 {branch.ownerName}</Text>
+                <Text style={styles.branchMeta}>{branch.ownerName}</Text>
                 <Text style={styles.branchMetaDot}>·</Text>
-                <Text style={styles.branchMeta}>📞 {branch.phone || '연락처 없음'}</Text>
+                <Text style={styles.branchMeta}>{branch.phone || '연락처 없음'}</Text>
               </View>
               <View style={styles.branchDateRow}>
                 <Text style={styles.branchDateLabel}>교육 시작일</Text>
@@ -105,7 +106,7 @@ export default function BranchManageScreen() {
 
         {filtered.length === 0 && (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🏪</Text>
+            <Feather name="inbox" size={48} color={COLORS.textTertiary} style={{ opacity: 0.3, marginBottom: SPACING.lg }} />
             <Text style={styles.emptyText}>등록된 지점이 없습니다</Text>
             <Text style={styles.emptyDesc}>상단의 '+ 지점등록' 버튼으로 추가하세요</Text>
           </View>
@@ -175,7 +176,7 @@ export default function BranchManageScreen() {
                 }}
               >
                 <Text style={{ fontSize: 15, color: form.startDate ? COLORS.text : COLORS.textTertiary }}>
-                  {form.startDate || '📅 날짜를 선택하세요'}
+                  {form.startDate || '날짜를 선택하세요'}
                 </Text>
               </TouchableOpacity>
 

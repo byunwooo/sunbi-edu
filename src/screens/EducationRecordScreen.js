@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, Alert, Modal, FlatList,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW, CURRICULUM_STEPS } from '../lib/constants';
 
 const MOCK_BRANCHES = [
@@ -47,7 +48,7 @@ function Dropdown({ label, value, placeholder, options, onSelect, required }) {
                   onPress={() => { onSelect(item); setVisible(false); }}
                   activeOpacity={0.7}
                 >
-                  {item.icon && <Text style={styles.modalItemIcon}>{item.icon}</Text>}
+                  {item.icon && <Feather name={item.icon} size={16} color={COLORS.primary} style={{ marginRight: SPACING.md }} />}
                   <Text style={styles.modalItemText}>{item.label || item.name}</Text>
                 </TouchableOpacity>
               )}
