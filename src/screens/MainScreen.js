@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW, CURRICULUM_STEPS } from '../lib/constants';
 
 const MOCK_BRANCHES = [
@@ -26,7 +25,7 @@ export default function MainScreen({ navigation }) {
             <Text style={styles.greeting}>안녕하세요</Text>
           </View>
           <TouchableOpacity style={styles.logoutBtn} onPress={() => navigation.replace('Login')}>
-            <Feather name="log-out" size={16} color={COLORS.textTertiary} />
+            <Text style={{ fontSize: 11, color: COLORS.textTertiary, fontWeight: '600' }}>logout</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -39,7 +38,7 @@ export default function MainScreen({ navigation }) {
             { val: totalRecords, label: '총 기록', icon: 'file-text' },
           ].map((s, i) => (
             <View key={i} style={[styles.statCard, s.accent && styles.statCardAccent]}>
-              <Feather name={s.icon} size={16} color={s.accent ? COLORS.primary : COLORS.textTertiary} />
+              <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: s.accent ? COLORS.primary : COLORS.textTertiary }} />
               <Text style={[styles.statValue, s.accent && { color: COLORS.primary }]}>{s.val}</Text>
               <Text style={styles.statLabel}>{s.label}</Text>
             </View>
@@ -48,30 +47,30 @@ export default function MainScreen({ navigation }) {
 
         <TouchableOpacity style={styles.primaryCard} activeOpacity={0.9} onPress={() => navigation.navigate('EducationRecord')}>
           <View style={styles.primaryCardRow}>
-            <View style={styles.primaryIconWrap}><Feather name="edit-3" size={22} color={COLORS.textOnPrimary} /></View>
+            <View style={styles.primaryIconWrap} />
             <View style={{ flex: 1 }}>
               <Text style={styles.primaryTitle}>교육 기록 입력</Text>
               <Text style={styles.primaryDesc}>지점별 교육 내용 및 평가 기록</Text>
             </View>
-            <Feather name="chevron-right" size={22} color={COLORS.textOnPrimaryMuted} />
+            <Text style={{ fontSize: 18, color: COLORS.textOnPrimaryMuted, fontWeight: '600' }}>{'>'}</Text>
           </View>
         </TouchableOpacity>
 
         <View style={styles.menuGrid}>
           <TouchableOpacity style={styles.menuCard} activeOpacity={0.9} onPress={() => navigation.navigate('BranchManage')}>
-            <View style={styles.menuIconWrap}><Feather name="briefcase" size={20} color={COLORS.primary} /></View>
+            <View style={styles.menuIconWrap} />
             <Text style={styles.menuTitle}>지점 관리</Text>
             <Text style={styles.menuDesc}>등록 및 목록 관리</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuCard} activeOpacity={0.9} onPress={() => navigation.navigate('Dashboard')}>
-            <View style={styles.menuIconWrap}><Feather name="bar-chart-2" size={20} color={COLORS.primary} /></View>
+            <View style={styles.menuIconWrap} />
             <Text style={styles.menuTitle}>전체 현황</Text>
             <Text style={styles.menuDesc}>진행률 & 분석</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.sectionRow}>
-          <Feather name="activity" size={14} color={COLORS.primary} />
+          <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: COLORS.primary }} />
           <Text style={styles.sectionTitle}>현재 교육 현황</Text>
           <View style={styles.badge}><Text style={styles.badgeText}>{branches.length}개 지점</Text></View>
         </View>
@@ -97,7 +96,7 @@ export default function MainScreen({ navigation }) {
                   const done = branch.records.some(r => r.step === step.id && r.passed);
                   return (
                     <View key={step.id} style={[styles.stepChip, done && styles.stepChipDone]}>
-                      <Feather name={step.icon} size={12} color={done ? COLORS.success : COLORS.textTertiary} style={{ opacity: done ? 1 : 0.3 }} />
+                      <Text style={{ fontSize: 12, fontWeight: '700', color: done ? COLORS.success : COLORS.textTertiary, opacity: done ? 1 : 0.3 }}>{step.id}</Text>
                     </View>
                   );
                 })}

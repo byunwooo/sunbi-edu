@@ -3,7 +3,6 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, Alert, Modal,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW } from '../lib/constants';
 
 const INITIAL_BRANCHES = [
@@ -58,7 +57,7 @@ export default function BranchManageScreen() {
       {/* 검색 + 등록 */}
       <View style={styles.topBar}>
         <View style={styles.searchWrap}>
-          <Feather name="search" size={16} color={COLORS.textTertiary} style={{ marginRight: SPACING.sm }} />
+          <View style={{ width: 16, height: 16, marginRight: SPACING.sm }} />
           <TextInput
             style={styles.searchInput}
             placeholder="지점명 또는 점주 검색"
@@ -106,7 +105,7 @@ export default function BranchManageScreen() {
 
         {filtered.length === 0 && (
           <View style={styles.emptyState}>
-            <Feather name="inbox" size={48} color={COLORS.textTertiary} style={{ opacity: 0.3, marginBottom: SPACING.lg }} />
+            <Text style={{ fontSize: 32, color: COLORS.textTertiary, opacity: 0.3, marginBottom: SPACING.lg }}>-</Text>
             <Text style={styles.emptyText}>등록된 지점이 없습니다</Text>
             <Text style={styles.emptyDesc}>상단의 '+ 지점등록' 버튼으로 추가하세요</Text>
           </View>

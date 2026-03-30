@@ -24,7 +24,7 @@ const screenOptions = {
 function BackButton({ onPress }) {
   return (
     <TouchableOpacity onPress={onPress} style={{ paddingRight: 12 }}>
-      <Text style={{ color: COLORS.white, fontSize: 18 }}>← 뒤로</Text>
+      <Text style={{ color: COLORS.white, fontSize: 15, fontWeight: '600' }}>{'< 뒤로'}</Text>
     </TouchableOpacity>
   );
 }

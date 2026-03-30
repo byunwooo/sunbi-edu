@@ -3,7 +3,6 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, Alert, Modal, FlatList,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW, CURRICULUM_STEPS } from '../lib/constants';
 
 const MOCK_BRANCHES = [
@@ -28,7 +27,7 @@ function Dropdown({ label, value, placeholder, options, onSelect, required }) {
         <Text style={value ? styles.dropdownText : styles.dropdownPlaceholder}>
           {value || placeholder || '선택하세요'}
         </Text>
-        <Text style={styles.dropdownChevron}>▾</Text>
+        <Text style={styles.dropdownChevron}>v</Text>
       </TouchableOpacity>
       <Modal visible={visible} transparent animationType="fade">
         <TouchableOpacity
@@ -48,7 +47,7 @@ function Dropdown({ label, value, placeholder, options, onSelect, required }) {
                   onPress={() => { onSelect(item); setVisible(false); }}
                   activeOpacity={0.7}
                 >
-                  {item.icon && <Feather name={item.icon} size={16} color={COLORS.primary} style={{ marginRight: SPACING.md }} />}
+                  {item.icon && <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.primary, marginRight: SPACING.md }} />}
                   <Text style={styles.modalItemText}>{item.label || item.name}</Text>
                 </TouchableOpacity>
               )}
@@ -135,7 +134,7 @@ export default function EducationRecordScreen({ navigation }) {
             onPress={() => setPassed(true)}
             activeOpacity={0.8}
           >
-            <Text style={styles.passIcon}>✓</Text>
+            <Text style={styles.passIcon}>O</Text>
             <Text style={[
               styles.passBtnText,
               passed === true && styles.passBtnTextActive,
@@ -149,7 +148,7 @@ export default function EducationRecordScreen({ navigation }) {
             onPress={() => setPassed(false)}
             activeOpacity={0.8}
           >
-            <Text style={styles.failIcon}>✗</Text>
+            <Text style={styles.failIcon}>X</Text>
             <Text style={[
               styles.passBtnText,
               passed === false && styles.failBtnTextActive,
