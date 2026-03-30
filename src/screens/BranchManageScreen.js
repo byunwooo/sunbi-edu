@@ -150,8 +150,15 @@ export default function BranchManageScreen() {
                 placeholder="010-0000-0000"
                 placeholderTextColor={COLORS.textTertiary}
                 value={form.phone}
-                onChangeText={(v) => setForm(f => ({ ...f, phone: v }))}
+                onChangeText={(v) => {
+                  const nums = v.replace(/[^0-9]/g, '').slice(0, 11);
+                  let formatted = nums;
+                  if (nums.length > 3 && nums.length <= 7) formatted = nums.slice(0,3) + '-' + nums.slice(3);
+                  else if (nums.length > 7) formatted = nums.slice(0,3) + '-' + nums.slice(3,7) + '-' + nums.slice(7);
+                  setForm(f => ({ ...f, phone: formatted }));
+                }}
                 keyboardType="phone-pad"
+                maxLength={13}
               />
 
               <Text style={styles.label}>교육 시작일</Text>

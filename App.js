@@ -23,8 +23,8 @@ const screenOptions = {
 
 function BackButton({ onPress }) {
   return (
-    <TouchableOpacity onPress={onPress} style={{ paddingRight: 12 }}>
-      <Text style={{ color: COLORS.white, fontSize: 15, fontWeight: '600' }}>{'< 뒤로'}</Text>
+    <TouchableOpacity onPress={onPress} style={{ paddingLeft: 8 }}>
+      <Text style={{ color: COLORS.white, fontSize: 13, fontWeight: '600' }}>{'뒤로'}</Text>
     </TouchableOpacity>
   );
 }
@@ -49,7 +49,8 @@ export default function App() {
           component={EducationRecordScreen}
           options={({ navigation }) => ({
             title: '교육 기록 입력',
-            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerLeft: () => null,
+            headerRight: () => <BackButton onPress={() => navigation.goBack()} />,
           })}
         />
         <Stack.Screen
@@ -57,7 +58,8 @@ export default function App() {
           component={BranchManageScreen}
           options={({ navigation }) => ({
             title: '지점 관리',
-            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerLeft: () => null,
+            headerRight: () => <BackButton onPress={() => navigation.goBack()} />,
           })}
         />
         <Stack.Screen
@@ -65,7 +67,8 @@ export default function App() {
           component={DashboardScreen}
           options={({ navigation }) => ({
             title: '전체 현황 대시보드',
-            headerLeft: () => <BackButton onPress={() => navigation.goBack()} />,
+            headerLeft: () => null,
+            headerRight: () => <BackButton onPress={() => navigation.goBack()} />,
           })}
         />
       </Stack.Navigator>
