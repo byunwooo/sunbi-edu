@@ -3,7 +3,6 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, Alert,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, SHADOW } from '../lib/constants';
 
 export default function LoginScreen({ navigation }) {
@@ -46,7 +45,6 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>아이디</Text>
             <View style={[styles.inputWrap, focusedField === 'id' && styles.inputWrapFocused]}>
-              <Feather name="user" size={18} color={focusedField === 'id' ? COLORS.primary : COLORS.textTertiary} />
               <TextInput
                 style={styles.input}
                 placeholder="아이디를 입력하세요"
@@ -64,7 +62,6 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>비밀번호</Text>
             <View style={[styles.inputWrap, focusedField === 'pw' && styles.inputWrapFocused]}>
-              <Feather name="lock" size={18} color={focusedField === 'pw' ? COLORS.primary : COLORS.textTertiary} />
               <TextInput
                 style={styles.input}
                 placeholder="비밀번호를 입력하세요"
@@ -76,7 +73,9 @@ export default function LoginScreen({ navigation }) {
                 onBlur={() => setFocusedField(null)}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-                <Feather name={showPassword ? 'eye-off' : 'eye'} size={18} color={COLORS.textTertiary} />
+                <Text style={{ fontSize: 13, color: COLORS.textTertiary, fontWeight: '600' }}>
+                  {showPassword ? '숨김' : '보기'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -88,7 +87,6 @@ export default function LoginScreen({ navigation }) {
             activeOpacity={0.85}
           >
             <Text style={styles.loginBtnText}>{loading ? '로그인 중...' : '로그인'}</Text>
-            {!loading && <Feather name="arrow-right" size={18} color={COLORS.textOnPrimary} style={{ marginLeft: 8 }} />}
           </TouchableOpacity>
         </View>
 
@@ -116,8 +114,8 @@ const styles = StyleSheet.create({
   label: { fontSize: 12, fontWeight: '700', color: COLORS.textSecondary, marginBottom: SPACING.sm, letterSpacing: 0.3 },
   inputWrap: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: COLORS.backgroundWarm,
-    borderRadius: RADIUS.md, borderWidth: 1.5, borderColor: 'transparent',
-    paddingHorizontal: SPACING.lg, gap: SPACING.md,
+    borderRadius: RADIUS.md, borderWidth: 1, borderColor: COLORS.borderLight,
+    paddingHorizontal: SPACING.lg, gap: SPACING.sm,
   },
   inputWrapFocused: { borderColor: COLORS.primary, backgroundColor: COLORS.surface },
   input: { flex: 1, paddingVertical: 14, fontSize: 15, color: COLORS.text },
