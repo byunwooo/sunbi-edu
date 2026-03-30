@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.xxxl,
   },
   logoBadge: {
-    width: 64,
-    height: 64,
-    borderRadius: 18,
+    width: 72,
+    height: 72,
+    borderRadius: 20,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -149,9 +149,10 @@ const styles = StyleSheet.create({
     ...SHADOW.lg,
   },
   logoBadgeText: {
-    fontSize: 28,
+    fontSize: 36,
     color: COLORS.textOnPrimary,
-    fontWeight: '300',
+    fontWeight: '900',
+    fontFamily: 'serif',
   },
   logoTitle: {
     fontSize: 28,
