@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }) {
         {/* 로고 영역 */}
         <View style={styles.logoArea}>
           <View style={styles.logoBadge}>
-            <Text style={styles.logoBadgeText}>善</Text>
+            <Text style={styles.logoBadgeText}>선</Text>
           </View>
           <Text style={styles.logoTitle}>선비칼국수</Text>
           <View style={styles.logoDivider} />
@@ -50,7 +50,7 @@ export default function LoginScreen({ navigation }) {
               styles.inputWrap,
               focusedField === 'id' && styles.inputWrapFocused,
             ]}>
-              <Text style={styles.inputIcon}>👤</Text>
+              <Text style={styles.inputIcon}>ID</Text>
               <TextInput
                 style={styles.input}
                 placeholder="아이디를 입력하세요"
@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }) {
               styles.inputWrap,
               focusedField === 'pw' && styles.inputWrapFocused,
             ]}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Text style={styles.inputIcon}>*</Text>
               <TextInput
                 style={styles.input}
                 placeholder="비밀번호를 입력하세요"
@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.footer}>© 2026 선비칼국수 본사</Text>
+        <Text style={styles.footer}>© 2026 (주)GGC 선비칼국수</Text>
       </View>
     </KeyboardAvoidingView>
   );
