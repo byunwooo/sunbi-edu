@@ -1,33 +1,43 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, Modal, FlatList,
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  ScrollView, Alert, Modal, FlatList,
 } from 'react-native';
-import { COLORS, CURRICULUM_STEPS } from '../lib/constants';
+import { COLORS, SPACING, RADIUS, SHADOW, CURRICULUM_STEPS } from '../lib/constants';
 
-// TODO: Supabase에서 로드
 const MOCK_BRANCHES = [
   { id: '1', name: '용인백암점' },
   { id: '2', name: '안산초지동자동차매매단지점' },
 ];
 
-function Dropdown({ label, value, options, onSelect, required }) {
+function Dropdown({ label, value, placeholder, options, onSelect, required }) {
   const [visible, setVisible] = useState(false);
   return (
-    <View style={styles.field}>
+    <View style={styles.fieldGroup}>
       {label && (
         <Text style={styles.label}>
           {label} {required && <Text style={styles.required}>*</Text>}
         </Text>
       )}
-      <TouchableOpacity style={styles.dropdown} onPress={() => setVisible(true)}>
+      <TouchableOpacity
+        style={[styles.dropdownBtn, value && styles.dropdownBtnFilled]}
+        onPress={() => setVisible(true)}
+        activeOpacity={0.8}
+      >
         <Text style={value ? styles.dropdownText : styles.dropdownPlaceholder}>
-          {value || '단계 선택'}
+          {value || placeholder || '선택하세요'}
         </Text>
-        <Text style={styles.dropdownArrow}>▼</Text>
+        <Text style={styles.dropdownChevron}>▾</Text>
       </TouchableOpacity>
       <Modal visible={visible} transparent animationType="fade">
-        <TouchableOpacity style={styles.modalOverlay} onPress={() => setVisible(false)}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setVisible(false)}
+        >
+          <View style={styles.modalSheet}>
+            <View style={styles.modalHandle} />
+            <Text style={styles.modalTitle}>{label || '선택'}</Text>
             <FlatList
               data={options}
               keyExtractor={(item) => item.id.toString()}
@@ -35,10 +45,13 @@ function Dropdown({ label, value, options, onSelect, required }) {
                 <TouchableOpacity
                   style={styles.modalItem}
                   onPress={() => { onSelect(item); setVisible(false); }}
+                  activeOpacity={0.7}
                 >
+                  {item.icon && <Text style={styles.modalItemIcon}>{item.icon}</Text>}
                   <Text style={styles.modalItemText}>{item.label || item.name}</Text>
                 </TouchableOpacity>
               )}
+              ItemSeparatorComponent={() => <View style={styles.modalDivider} />}
             />
           </View>
         </TouchableOpacity>
@@ -51,57 +64,49 @@ export default function EducationRecordScreen({ navigation }) {
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [ownerName, setOwnerName] = useState('');
   const [selectedStep, setSelectedStep] = useState(null);
-  const [passed, setPassed] = useState(null); // true / false
+  const [passed, setPassed] = useState(null);
   const [ownerComment, setOwnerComment] = useState('');
   const [svComment, setSvComment] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!selectedBranch || !ownerName || !selectedStep || passed === null) {
       Alert.alert('알림', '필수 항목을 모두 입력해주세요.');
       return;
     }
-
-    // TODO: Supabase에 저장
-    const record = {
-      branchId: selectedBranch.id,
-      branchName: selectedBranch.name,
-      ownerName,
-      stepId: selectedStep.id,
-      stepLabel: selectedStep.label,
-      passed,
-      ownerComment,
-      svComment,
-      createdAt: new Date().toISOString(),
-    };
-
-    console.log('저장할 데이터:', record);
     Alert.alert('완료', '교육 기록이 저장되었습니다.', [
       { text: '확인', onPress: () => navigation.goBack() },
     ]);
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
       {/* 지점 선택 */}
       <Dropdown
-        label=""
+        label="지점"
+        required
+        placeholder="지점 선택"
         value={selectedBranch?.name}
-        options={MOCK_BRANCHES.map(b => ({ id: b.id, label: b.name, name: b.name }))}
-        onSelect={(item) => setSelectedBranch({ id: item.id, name: item.name })}
+        options={MOCK_BRANCHES.map(b => ({ ...b, label: b.name }))}
+        onSelect={(item) => setSelectedBranch(item)}
       />
 
       {/* 점주 이름 */}
-      <View style={styles.field}>
+      <View style={styles.fieldGroup}>
         <Text style={styles.label}>
           점주 이름 <Text style={styles.required}>*</Text>
         </Text>
         <TextInput
           style={styles.input}
-          placeholder="점주 이름"
-          placeholderTextColor={COLORS.textMuted}
+          placeholder="점주 이름을 입력하세요"
+          placeholderTextColor={COLORS.textTertiary}
           value={ownerName}
           onChangeText={setOwnerName}
+          autoCorrect={false}
+          spellCheck={false}
         />
       </View>
 
@@ -109,13 +114,14 @@ export default function EducationRecordScreen({ navigation }) {
       <Dropdown
         label="커리큘럼 단계"
         required
+        placeholder="단계 선택"
         value={selectedStep?.label}
         options={CURRICULUM_STEPS}
         onSelect={setSelectedStep}
       />
 
       {/* 이수 여부 */}
-      <View style={styles.field}>
+      <View style={styles.fieldGroup}>
         <Text style={styles.label}>
           이수 여부 <Text style={styles.required}>*</Text>
         </Text>
@@ -126,13 +132,13 @@ export default function EducationRecordScreen({ navigation }) {
               passed === true && styles.passBtnActive,
             ]}
             onPress={() => setPassed(true)}
+            activeOpacity={0.8}
           >
+            <Text style={styles.passIcon}>✓</Text>
             <Text style={[
               styles.passBtnText,
               passed === true && styles.passBtnTextActive,
-            ]}>
-              ✓ 이수 완료
-            </Text>
+            ]}>이수 완료</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -140,24 +146,24 @@ export default function EducationRecordScreen({ navigation }) {
               passed === false && styles.failBtnActive,
             ]}
             onPress={() => setPassed(false)}
+            activeOpacity={0.8}
           >
+            <Text style={styles.failIcon}>✗</Text>
             <Text style={[
               styles.passBtnText,
               passed === false && styles.failBtnTextActive,
-            ]}>
-              ✗ 미이수
-            </Text>
+            ]}>미이수</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* 점주 코멘트 */}
-      <View style={styles.field}>
+      <View style={styles.fieldGroup}>
         <Text style={styles.label}>점주 코멘트</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
-          placeholder="점주의 교육 피드백"
-          placeholderTextColor={COLORS.textMuted}
+          placeholder="점주의 교육 피드백을 입력하세요"
+          placeholderTextColor={COLORS.textTertiary}
           value={ownerComment}
           onChangeText={setOwnerComment}
           multiline
@@ -167,12 +173,12 @@ export default function EducationRecordScreen({ navigation }) {
       </View>
 
       {/* SV 코멘트 */}
-      <View style={styles.field}>
+      <View style={styles.fieldGroup}>
         <Text style={styles.label}>SV 코멘트</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
-          placeholder="교육 내용 요약 및 특이사항"
-          placeholderTextColor={COLORS.textMuted}
+          placeholder="교육 내용 요약 및 특이사항을 입력하세요"
+          placeholderTextColor={COLORS.textTertiary}
           value={svComment}
           onChangeText={setSvComment}
           multiline
@@ -181,88 +187,135 @@ export default function EducationRecordScreen({ navigation }) {
         />
       </View>
 
-      {/* 저장 버튼 */}
-      <TouchableOpacity
-        style={[styles.saveBtn, loading && { opacity: 0.6 }]}
-        onPress={handleSave}
-        disabled={loading}
-      >
+      {/* 저장 */}
+      <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.85}>
         <Text style={styles.saveBtnText}>기록 저장</Text>
       </TouchableOpacity>
+
+      <View style={{ height: SPACING.xxxl }} />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  content: { padding: 16, paddingBottom: 40 },
-  field: { marginBottom: 18 },
-  label: { fontSize: 13, fontWeight: '600', color: COLORS.primary, marginBottom: 6 },
+  content: {
+    padding: SPACING.xl,
+    maxWidth: 600,
+    width: '100%',
+    alignSelf: 'center',
+  },
+  fieldGroup: { marginBottom: SPACING.xl },
+  label: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.sm,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
   required: { color: COLORS.danger },
   input: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: 12,
+    borderRadius: RADIUS.md,
+    padding: SPACING.lg,
     fontSize: 15,
     color: COLORS.text,
   },
   textArea: { minHeight: 100 },
-  dropdown: {
-    backgroundColor: COLORS.white,
+  dropdownBtn: {
+    backgroundColor: COLORS.surface,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: 12,
+    borderRadius: RADIUS.md,
+    padding: SPACING.lg,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  dropdownText: { fontSize: 15, color: COLORS.text },
-  dropdownPlaceholder: { fontSize: 15, color: COLORS.textMuted },
-  dropdownArrow: { fontSize: 12, color: COLORS.textMuted },
+  dropdownBtnFilled: {
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.primarySoft,
+  },
+  dropdownText: { fontSize: 15, color: COLORS.text, fontWeight: '500' },
+  dropdownPlaceholder: { fontSize: 15, color: COLORS.textTertiary },
+  dropdownChevron: { fontSize: 14, color: COLORS.textTertiary },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    padding: 32,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
   },
-  modalContent: {
-    backgroundColor: COLORS.white,
-    borderRadius: 14,
-    maxHeight: 400,
-    overflow: 'hidden',
+  modalSheet: {
+    backgroundColor: COLORS.surface,
+    borderTopLeftRadius: RADIUS.xl,
+    borderTopRightRadius: RADIUS.xl,
+    maxHeight: '70%',
+    paddingBottom: SPACING.xxxl,
   },
-  modalItem: { padding: 16, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  modalHandle: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: COLORS.border,
+    alignSelf: 'center',
+    marginTop: SPACING.md,
+    marginBottom: SPACING.lg,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.text,
+    paddingHorizontal: SPACING.xl,
+    marginBottom: SPACING.md,
+  },
+  modalItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
+  },
+  modalItemIcon: { fontSize: 18, marginRight: SPACING.md },
   modalItemText: { fontSize: 15, color: COLORS.text },
-  passRow: { flexDirection: 'row', gap: 12 },
+  modalDivider: { height: 1, backgroundColor: COLORS.borderLight, marginHorizontal: SPACING.xl },
+  passRow: { flexDirection: 'row', gap: SPACING.md },
   passBtn: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.surface,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: 14,
-    alignItems: 'center',
+    borderRadius: RADIUS.md,
+    paddingVertical: 16,
+    gap: SPACING.sm,
   },
   passBtnActive: {
-    backgroundColor: '#e8f5e9',
+    backgroundColor: COLORS.successBg,
     borderColor: COLORS.success,
   },
   failBtnActive: {
-    backgroundColor: '#fde8e8',
+    backgroundColor: COLORS.dangerBg,
     borderColor: COLORS.danger,
   },
-  passBtnText: { fontSize: 15, color: COLORS.textLight, fontWeight: '600' },
+  passIcon: { fontSize: 16, color: COLORS.textTertiary },
+  failIcon: { fontSize: 16, color: COLORS.textTertiary },
+  passBtnText: { fontSize: 15, color: COLORS.textTertiary, fontWeight: '600' },
   passBtnTextActive: { color: COLORS.success },
   failBtnTextActive: { color: COLORS.danger },
   saveBtn: {
     backgroundColor: COLORS.primary,
-    borderRadius: 10,
-    padding: 16,
+    borderRadius: RADIUS.md,
+    paddingVertical: 18,
     alignItems: 'center',
-    marginTop: 8,
+    ...SHADOW.md,
   },
-  saveBtnText: { color: COLORS.white, fontSize: 16, fontWeight: '700' },
+  saveBtnText: {
+    color: COLORS.textOnPrimary,
+    fontSize: 16,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
 });

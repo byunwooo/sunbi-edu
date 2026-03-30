@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert,
+  View, Text, TextInput, TouchableOpacity, StyleSheet,
+  KeyboardAvoidingView, Platform, Alert, Animated,
 } from 'react-native';
-import { COLORS } from '../lib/constants';
+import { COLORS, SPACING, RADIUS, SHADOW } from '../lib/constants';
 
 export default function LoginScreen({ navigation }) {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [focusedField, setFocusedField] = useState(null);
 
   const handleLogin = async () => {
     if (!userId || !password) {
       Alert.alert('알림', '아이디와 비밀번호를 입력해주세요.');
       return;
     }
-    // TODO: Supabase 인증 연동
-    // 임시로 바로 메인화면으로 이동
     navigation.replace('Main');
   };
 
@@ -24,39 +24,80 @@ export default function LoginScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.header}>
-        <Text style={styles.logo}>선비칼국수</Text>
-        <Text style={styles.subtitle}>교육 관리 시스템</Text>
-      </View>
+      {/* 배경 장식 */}
+      <View style={styles.bgDecorTop} />
+      <View style={styles.bgDecorBottom} />
 
-      <View style={styles.form}>
-        <Text style={styles.label}>아이디</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="아이디"
-          placeholderTextColor={COLORS.textMuted}
-          value={userId}
-          onChangeText={setUserId}
-          autoCapitalize="none"
-        />
+      <View style={styles.inner}>
+        {/* 로고 영역 */}
+        <View style={styles.logoArea}>
+          <View style={styles.logoBadge}>
+            <Text style={styles.logoBadgeText}>善</Text>
+          </View>
+          <Text style={styles.logoTitle}>선비칼국수</Text>
+          <View style={styles.logoDivider} />
+          <Text style={styles.logoSub}>교육 관리 시스템</Text>
+        </View>
 
-        <Text style={styles.label}>비밀번호</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호"
-          placeholderTextColor={COLORS.textMuted}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        {/* 로그인 폼 */}
+        <View style={styles.formCard}>
+          <Text style={styles.formTitle}>로그인</Text>
+          <Text style={styles.formDesc}>본사 관리자 또는 SV 계정으로 로그인하세요</Text>
 
-        <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>{loading ? '로그인 중...' : '로그인'}</Text>
-        </TouchableOpacity>
+          <View style={styles.fieldGroup}>
+            <Text style={styles.label}>아이디</Text>
+            <View style={[
+              styles.inputWrap,
+              focusedField === 'id' && styles.inputWrapFocused,
+            ]}>
+              <Text style={styles.inputIcon}>👤</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="아이디를 입력하세요"
+                placeholderTextColor={COLORS.textTertiary}
+                value={userId}
+                onChangeText={setUserId}
+                autoCapitalize="none"
+                autoCorrect={false}
+                onFocus={() => setFocusedField('id')}
+                onBlur={() => setFocusedField(null)}
+              />
+            </View>
+          </View>
+
+          <View style={styles.fieldGroup}>
+            <Text style={styles.label}>비밀번호</Text>
+            <View style={[
+              styles.inputWrap,
+              focusedField === 'pw' && styles.inputWrapFocused,
+            ]}>
+              <Text style={styles.inputIcon}>🔒</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호를 입력하세요"
+                placeholderTextColor={COLORS.textTertiary}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                onFocus={() => setFocusedField('pw')}
+                onBlur={() => setFocusedField(null)}
+              />
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[styles.loginBtn, loading && styles.loginBtnDisabled]}
+            onPress={handleLogin}
+            disabled={loading}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.loginBtnText}>
+              {loading ? '로그인 중...' : '로그인'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.footer}>© 2026 선비칼국수 본사</Text>
       </View>
     </KeyboardAvoidingView>
   );
@@ -66,62 +107,146 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  bgDecorTop: {
+    position: 'absolute',
+    top: -120,
+    right: -80,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
+    backgroundColor: COLORS.primaryGlow,
+  },
+  bgDecorBottom: {
+    position: 'absolute',
+    bottom: -60,
+    left: -40,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: COLORS.primarySoft,
+  },
+  inner: {
+    flex: 1,
     justifyContent: 'center',
-    padding: 24,
+    paddingHorizontal: SPACING.xxl,
+    maxWidth: 440,
+    width: '100%',
+    alignSelf: 'center',
   },
-  header: {
+  logoArea: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: SPACING.xxxl,
   },
-  logo: {
-    fontSize: 32,
-    fontWeight: '700',
+  logoBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: 18,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.lg,
+    ...SHADOW.lg,
+  },
+  logoBadgeText: {
+    fontSize: 28,
+    color: COLORS.textOnPrimary,
+    fontWeight: '300',
+  },
+  logoTitle: {
+    fontSize: 28,
+    fontWeight: '800',
     color: COLORS.primary,
-    letterSpacing: -1,
+    letterSpacing: -0.5,
   },
-  subtitle: {
+  logoDivider: {
+    width: 32,
+    height: 2,
+    backgroundColor: COLORS.primary,
+    marginVertical: SPACING.md,
+    borderRadius: 1,
+    opacity: 0.3,
+  },
+  logoSub: {
     fontSize: 14,
-    color: COLORS.textLight,
-    marginTop: 8,
+    color: COLORS.textTertiary,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
-  form: {
-    backgroundColor: COLORS.white,
-    borderRadius: 14,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 10,
-    elevation: 3,
+  formCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.xl,
+    padding: SPACING.xxl,
+    ...SHADOW.lg,
+  },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: SPACING.xs,
+  },
+  formDesc: {
+    fontSize: 13,
+    color: COLORS.textTertiary,
+    marginBottom: SPACING.xxl,
+    lineHeight: 18,
+  },
+  fieldGroup: {
+    marginBottom: SPACING.xl,
   },
   label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.primary,
-    marginBottom: 6,
-    marginTop: 12,
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.sm,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  inputWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.backgroundWarm,
+    borderRadius: RADIUS.md,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    paddingHorizontal: SPACING.lg,
+  },
+  inputWrapFocused: {
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.surface,
+  },
+  inputIcon: {
+    fontSize: 16,
+    marginRight: SPACING.md,
+    opacity: 0.5,
   },
   input: {
-    borderWidth: 1.5,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    padding: 12,
+    flex: 1,
+    paddingVertical: 14,
     fontSize: 15,
     color: COLORS.text,
   },
-  button: {
+  loginBtn: {
     backgroundColor: COLORS.primary,
-    borderRadius: 10,
-    padding: 16,
+    borderRadius: RADIUS.md,
+    paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: SPACING.sm,
+    ...SHADOW.md,
   },
-  buttonDisabled: {
+  loginBtnDisabled: {
     opacity: 0.6,
   },
-  buttonText: {
-    color: COLORS.white,
+  loginBtnText: {
+    color: COLORS.textOnPrimary,
     fontSize: 16,
     fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  footer: {
+    textAlign: 'center',
+    fontSize: 11,
+    color: COLORS.textTertiary,
+    marginTop: SPACING.xxl,
   },
 });
